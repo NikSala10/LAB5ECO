@@ -1,5 +1,5 @@
 const path = require("path");
-const { loadUsers, saveUsers } = require("../db/users");
+const { loadUsers, saveUsers } = require("../db/users.db");
 
 const createUser = (request, response) => {
     const users = loadUsers();

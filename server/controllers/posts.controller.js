@@ -1,6 +1,6 @@
 const path = require("path");
-const { loadUsers } = require("../db/users");
-const { loadPosts, savePosts } = require("../db/posts");
+const { loadUsers } = require("../db/users.db");
+const { loadPosts, savePosts } = require("../db/posts.db");
 
 const createPost = (request, response) => { 
     const { name, urlImg, title, description } = request.body;
