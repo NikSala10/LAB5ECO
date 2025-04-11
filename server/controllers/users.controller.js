@@ -1,15 +1,8 @@
-const fs = require("fs");
 const path = require("path");
-const usersFilePath = path.join(__dirname, "../db/users.json");
-
-let users = [];
-
-
-if (fs.existsSync(usersFilePath)) {
-    users = JSON.parse(fs.readFileSync(usersFilePath, "utf-8"));
-}
+const { loadUsers, saveUsers } = require("../db/users");
 
 const createUser = (request, response) => {
+    const users = loadUsers();
     const { userName, name, urlImg, password } = request.body;
     const existingUser = users.find(user => user.userName === userName);
 
@@ -20,11 +13,12 @@ const createUser = (request, response) => {
     const newUser = { id: users.length + 1, userName, name, urlImg, password };
     users.push(newUser);
 
-    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+    saveUsers(users);
     response.status(201).json({ message: "Usuario registrado correctamente", user: newUser });
 }
 
 const loginUser = (request, response) => { 
+    const users = loadUsers();
     const { userName, password } = request.body;
     const user = users.find(u => u.userName === userName);
 
@@ -40,6 +34,7 @@ const loginUser = (request, response) => {
 }
 
 const getUsers = (request, response) => {
+    const users = loadUsers();
     response.status(200).send(users);
 }
 

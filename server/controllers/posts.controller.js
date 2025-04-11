@@ -1,22 +1,12 @@
-const fs = require("fs");
 const path = require("path");
-const postsFilePath = path.join(__dirname, "../db/posts.json");
-const usersFilePath = path.join(__dirname, "../db/users.json");
-
-let users = [];
-let posts = [];
-
-
-if (fs.existsSync(usersFilePath)) {
-    users = JSON.parse(fs.readFileSync(usersFilePath, "utf-8"));
-}
-
-if (fs.existsSync(postsFilePath)) {
-    posts = JSON.parse(fs.readFileSync(postsFilePath, "utf-8"));
-}
+const { loadUsers } = require("../db/users");
+const { loadPosts, savePosts } = require("../db/posts");
 
 const createPost = (request, response) => { 
     const { name, urlImg, title, description } = request.body;
+
+    const users = loadUsers();  
+    const posts = loadPosts(); 
 
     const user = users.find(u => u.name === name);
 
@@ -33,13 +23,13 @@ const createPost = (request, response) => {
     };
 
     posts.push(newPost);
-
-    fs.writeFileSync(postsFilePath, JSON.stringify(posts, null, 2));
+    savePosts(posts);   
 
     response.status(201).json({ message: "Post creado exitosamente", post: newPost });
 }
 
 const getPosts = (request, response) => { 
+    const posts = loadPosts();
     response.status(200).send(posts);
 }
 
